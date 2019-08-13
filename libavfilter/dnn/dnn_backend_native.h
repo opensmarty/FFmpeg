@@ -24,15 +24,17 @@
  */
 
 
-#ifndef AVFILTER_DNN_BACKEND_NATIVE_H
-#define AVFILTER_DNN_BACKEND_NATIVE_H
+#ifndef AVFILTER_DNN_DNN_BACKEND_NATIVE_H
+#define AVFILTER_DNN_DNN_BACKEND_NATIVE_H
 
-#include "dnn_interface.h"
+#include "../dnn_interface.h"
 #include "libavformat/avio.h"
 
-typedef enum {INPUT, CONV, DEPTH_TO_SPACE} DNNLayerType;
+typedef enum {INPUT, CONV, DEPTH_TO_SPACE, MIRROR_PAD} DNNLayerType;
 
-typedef enum {RELU, TANH, SIGMOID} DNNActivationFunc;
+typedef enum {RELU, TANH, SIGMOID, NONE, LEAKY_RELU} DNNActivationFunc;
+
+typedef enum {VALID, SAME, SAME_CLAMP_TO_EDGE} DNNConvPaddingParam;
 
 typedef struct Layer{
     DNNLayerType type;
@@ -43,6 +45,8 @@ typedef struct Layer{
 typedef struct ConvolutionalParams{
     int32_t input_num, output_num, kernel_size;
     DNNActivationFunc activation;
+    DNNConvPaddingParam padding_method;
+    int32_t dilation;
     float *kernel;
     float *biases;
 } ConvolutionalParams;
